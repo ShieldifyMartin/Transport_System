@@ -1,0 +1,5 @@
+package org.example.entity.enums;
+
+public enum TransportType {
+    PEOPLE_TRANSPORTATION, CARGO_TRANSPORTATION, LIGHT_CARGO_TRANSPORTATION, REFRIGERATED_TRANSPORTATION
+}

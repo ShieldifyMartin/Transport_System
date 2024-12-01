@@ -1,0 +1,18 @@
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/transport-system-db</property>
+        <property name="hibernate.connection.username">root</property>
+
+        <!-- <mapping class="org.example.entity.Company"/>
+        <mapping class="org.example.entity.Staff"/>
+        <mapping class="org.example.entity.Customer"/>
+        <mapping class="org.example.entity.Driver"/>
+        <mapping class="org.example.entity.TransportOrder"/>
+        <mapping class="org.example.entity.Vehicle"/> -->
+
+    </session-factory>
+</hibernate-configuration>
