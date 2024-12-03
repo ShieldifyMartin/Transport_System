@@ -2,6 +2,7 @@ package org.example.entity;
 
 import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
@@ -11,6 +12,7 @@ import org.example.entity.enums.Position;
 @Entity
 @DiscriminatorValue("driver")
 public class Driver extends Staff {
+
     @ElementCollection
     @Enumerated(EnumType.STRING)
     @NotEmpty(message = "Driving categories cannot be empty!")
@@ -31,9 +33,9 @@ public class Driver extends Staff {
     }
 
     public Driver(String name, Position position, int age, BigDecimal salary, double yearlyBonusPercentage, 
-                  LocalDate hiringDate, Company company, Set<DrivingCategory> drivingCategories, 
+                  LocalDate hiringDate, Company company, String email, Set<DrivingCategory> drivingCategories, 
                   Long totalKmDrivenForCompany, BigDecimal totalFinesAndSanctions) {
-        super(name, position, age, salary, yearlyBonusPercentage, hiringDate, company);
+        super(name, position, age, salary, yearlyBonusPercentage, hiringDate, company, email);
         this.drivingCategories = drivingCategories;
         this.totalKmDrivenForCompany = totalKmDrivenForCompany;
         this.totalFinesAndSanctions = totalFinesAndSanctions;
@@ -75,6 +77,7 @@ public class Driver extends Staff {
             ", yearlyBonusPercentage=" + getYearlyBonusPercentage() +
             ", hiringDate=" + getHiringDate() +
             ", company=" + (getCompany() != null ? getCompany().getName() : "None") +
+            ", email=" + getEmail() +
             ", drivingCategories=" + drivingCategories +
             ", totalKmDrivenForCompany=" + totalKmDrivenForCompany +
             ", totalFinesAndSanctions=" + totalFinesAndSanctions +

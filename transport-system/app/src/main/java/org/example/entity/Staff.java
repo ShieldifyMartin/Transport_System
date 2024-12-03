@@ -49,11 +49,20 @@ public class Staff {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
+    @Email(message = "Email must be valid!")
+    @NotBlank(message = "Email cannot be blank!")
+    @Size(max = 100, message = "Email must not exceed 100 characters!")
+    @Column(name = "email", nullable = false, unique = true, length = 100)
+    private String email;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     // Constructors
     public Staff() {
     }
 
-    public Staff(String name, Position position, int age, BigDecimal salary, double yearlyBonusPercentage, LocalDate hiringDate, Company company) {
+    public Staff(String name, Position position, int age, BigDecimal salary, double yearlyBonusPercentage, LocalDate hiringDate, Company company, String email) {
         this.name = name;
         this.position = position;
         this.age = age;
@@ -61,6 +70,7 @@ public class Staff {
         this.yearlyBonusPercentage = yearlyBonusPercentage;
         this.hiringDate = hiringDate;
         this.company = company;
+        this.email = email;
     }
 
     // Getters and Setters
@@ -128,6 +138,22 @@ public class Staff {
         this.company = company;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void softDelete() {
+        this.isDeleted = true;
+    }
+
     @Override
     public String toString() {
         return "Staff{" +
@@ -139,6 +165,8 @@ public class Staff {
             ", yearlyBonusPercentage=" + yearlyBonusPercentage +
             ", hiringDate=" + hiringDate +
             ", company=" + (company != null ? company.getName() : "None") +
+            ", email='" + email + '\'' +
+            ", isDeleted=" + isDeleted +
             '}';
     }
 }

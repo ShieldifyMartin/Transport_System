@@ -1,12 +1,11 @@
 package org.example.entity;
 
-import org.example.entity.enums.LoyaltyStatus;
 import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
+import org.example.entity.enums.LoyaltyStatus;
 
 @Entity
 public class Customer {
@@ -44,12 +43,21 @@ public class Customer {
     @Size(min = 10, max = 255, message = "Address must be between 10 and 255 characters")
     private String address;
 
+    @Email(message = "Email must be valid!")
+    @NotBlank(message = "Email cannot be blank!")
+    @Size(max = 100, message = "Email must not exceed 100 characters!")
+    @Column(name = "email", nullable = false, unique = true, length = 100)
+    private String email;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     // Constructors
     public Customer() {
     }
 
     public Customer(Long id, String name, String description, LocalDate customer_since, Company company,
-                    LoyaltyStatus loyalty_status, BigDecimal money_spent, String phone, String address) {
+                    LoyaltyStatus loyalty_status, BigDecimal money_spent, String phone, String address, String email) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -59,6 +67,7 @@ public class Customer {
         this.money_spent = money_spent;
         this.phone = phone;
         this.address = address;
+        this.email = email;
     }
 
     // Getters and Setters
@@ -134,6 +143,22 @@ public class Customer {
         this.address = address;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void softDelete() {
+        this.isDeleted = true;
+    }
+
     @Override
     public String toString() {
         return "Customer{" +
@@ -141,11 +166,13 @@ public class Customer {
             ", name='" + name + '\'' +
             ", description='" + description + '\'' +
             ", customer_since=" + customer_since +
-            ", company=" + company +
+            ", company=" + (company != null ? company.getName() : "None") +
             ", loyalty_status=" + loyalty_status +
             ", money_spent=" + money_spent +
             ", phone='" + phone + '\'' +
             ", address='" + address + '\'' +
+            ", email='" + email + '\'' +
+            ", isDeleted=" + isDeleted +
             '}';
     }
 }

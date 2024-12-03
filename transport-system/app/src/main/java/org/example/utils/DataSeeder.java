@@ -1,17 +1,17 @@
 package org.example.utils;
 
-import org.example.dao.*;
-import org.example.entity.*;
-import org.example.entity.enums.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
+import org.example.dao.*;
+import org.example.entity.*;
+import org.example.entity.enums.*;
+import org.example.service.CompanyService;
 
 public class DataSeeder {
-    public static void seed() {
+    public static void seed(CompanyService companyService) {
         // Check if any company exists in the database
-        if (!CompanyDAO.getCompanies().isEmpty()) {
+        if (!companyService.getCompanies().isEmpty()) {
             System.out.println("Data is already seeded. Skipping seeding.");
             return; // Skip the seeding process if data already exists
         }
@@ -36,12 +36,12 @@ public class DataSeeder {
                 "Alice Brown, Bob White",
                 new BigDecimal("2000000.00")
             );
-            CompanyDAO.saveCompany(company1);
-            CompanyDAO.saveCompany(company2);
+            companyService.saveCompany(company1);
+            companyService.saveCompany(company2);
 
             // Create Staff
-            Staff staff1 = new Staff("John Doe", Position.MANAGER, 35, new BigDecimal("5000.00"), 10.0, LocalDate.of(2018, 6, 1), company1);
-            Staff staff2 = new Staff("Jane Smith", Position.DRIVER, 28, new BigDecimal("3000.00"), 5.0, LocalDate.of(2020, 3, 15), company2);
+            Staff staff1 = new Staff("John Doe", Position.MANAGER, 35, new BigDecimal("5000.00"), 10.0, LocalDate.of(2018, 6, 1), company1, "john18@gmail.com");
+            Staff staff2 = new Staff("Jane Smith", Position.DRIVER, 28, new BigDecimal("3000.00"), 5.0, LocalDate.of(2020, 3, 15), company2, "jane@gmail.com");
             StaffDAO.saveStaff(staff1);
             StaffDAO.saveStaff(staff2);
 
@@ -60,6 +60,7 @@ public class DataSeeder {
                 10.5,
                 LocalDate.of(2015, 6, 10),
                 company1,
+                "jack15@gmail.com",
                 Set.of(DrivingCategory.B, DrivingCategory.C),
                 120000L,
                 new BigDecimal("500.00")
@@ -72,6 +73,7 @@ public class DataSeeder {
                 8.0,
                 LocalDate.of(2018, 3, 15),
                 company2,
+                "mary@gmail.com",
                 Set.of(DrivingCategory.D, DrivingCategory.B),
                 80000L,
                 new BigDecimal("200.00")
@@ -80,8 +82,8 @@ public class DataSeeder {
             DriverDAO.saveDriver(driver2);
 
             // Create Transport Orders
-            TransportOrder order1 = new TransportOrder(company1, vehicle1, driver1, "New York", "Los Angeles", LocalDate.of(2024, 12, 5), LocalDate.of(2024, 12, 7), 4000.0, TransportType.PEOPLE_TRANSPORTATION, 2000, new BigDecimal("10000.00"));
-            TransportOrder order2 = new TransportOrder(company2, vehicle2, driver2, "San Francisco", "Chicago", LocalDate.of(2024, 12, 10), LocalDate.of(2024, 12, 12), 3000.0, TransportType.CARGO_TRANSPORTATION, 500, new BigDecimal("5000.00"));
+            TransportOrder order1 = new TransportOrder(company1, vehicle1, driver1, "New York", "Los Angeles", LocalDate.of(2024, 12, 5), LocalDate.of(2024, 12, 7), 4000.0, TransportType.PEOPLE_TRANSPORTATION, 2000, new BigDecimal("10000.00"), false);
+            TransportOrder order2 = new TransportOrder(company2, vehicle2, driver2, "San Francisco", "Chicago", LocalDate.of(2024, 12, 10), LocalDate.of(2024, 12, 12), 3000.0, TransportType.CARGO_TRANSPORTATION, 500, new BigDecimal("5000.00"), true);
             TransportOrderDAO.saveTransportOrder(order1);
             TransportOrderDAO.saveTransportOrder(order2);
 
@@ -94,8 +96,9 @@ public class DataSeeder {
                 null,
                 LoyaltyStatus.GOLD,
                 new BigDecimal("50000.00"),
-                "+1234567890",
-                "123 Business Ave, New York, NY"
+                "1234567890",
+                "123 Business Ave, New York, NY",
+                "contacts@acme.com"
             );
             Customer customer2 = new Customer(
                 null,
@@ -105,8 +108,9 @@ public class DataSeeder {
                 null,
                 LoyaltyStatus.SILVER,
                 new BigDecimal("25000.00"),
-                "+9876543210",
-                "456 Corporate Blvd, San Francisco, CA"
+                "9876543210",
+                "456 Corporate Blvd, San Francisco, CA",
+                "info@beta.com"
             );
             CustomerDAO.saveCustomer(customer1);
             CustomerDAO.saveCustomer(customer2);

@@ -10,17 +10,19 @@ public class DriverDTO {
     private BigDecimal salary;
     private Long companyId;
     private Set<String> drivingCategories;
+    private boolean isDeleted;
 
     // Constructors
     public DriverDTO() {}
 
-    public DriverDTO(Long id, String name, String position, BigDecimal salary, Long companyId, Set<String> drivingCategories) {
+    public DriverDTO(Long id, String name, String position, BigDecimal salary, Long companyId, Set<String> drivingCategories, boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.position = position;
         this.salary = salary;
         this.companyId = companyId;
         this.drivingCategories = drivingCategories;
+        this.isDeleted = isDeleted;
     }
 
     // Getters and Setters
@@ -72,6 +74,14 @@ public class DriverDTO {
         this.drivingCategories = drivingCategories;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     @Override
     public String toString() {
         return "DriverDTO{" +
@@ -81,6 +91,7 @@ public class DriverDTO {
             ", salary=" + salary +
             ", companyId=" + companyId +
             ", drivingCategories=" + drivingCategories +
+            ", isDeleted=" + isDeleted +
             '}';
     }
 }

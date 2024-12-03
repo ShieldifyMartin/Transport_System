@@ -21,8 +21,8 @@ public class Vehicle {
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Vehicle type cannot be null!")
-    @Column(name = "type", nullable = false)
-    private VehicleType type;
+    @Column(name = "vehicle_type", nullable = false)
+    private VehicleType vehicleType;
 
     @NotBlank(message = "Manufacturer cannot be blank!")
     @Size(max = 100, message = "Manufacturer name cannot exceed 100 characters!")
@@ -75,6 +75,9 @@ public class Vehicle {
     @Column(name = "is_electric", nullable = false)
     private boolean isElectric;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     // Validation for production year (Custom Method)
     @AssertTrue(message = "Production year must be no later than the current year!")
     public boolean isProductionYearValid() {
@@ -86,12 +89,12 @@ public class Vehicle {
     public Vehicle() {
     }
 
-    public Vehicle(Company company, VehicleType type, String manifacture, String model, String licensePlate, 
+    public Vehicle(Company company, VehicleType vehicleType, String manifacture, String model, String licensePlate, 
                    Integer productionYear, Double mileageKm, Integer horsePower, BigDecimal carryingAmount, 
                    Double fuelConsumptionPer100Km, Double luggageCapacityKg, Integer seatingCapacity, 
                    DrivingCategory requiredDrivingCategory, boolean isElectric) {
         this.company = company;
-        this.type = type;
+        this.vehicleType = vehicleType;
         this.manifacture = manifacture;
         this.model = model;
         this.licensePlate = licensePlate;
@@ -123,12 +126,12 @@ public class Vehicle {
         this.company = company;
     }
 
-    public VehicleType getType() {
-        return type;
+    public VehicleType getVehicleType() {
+        return vehicleType;
     }
 
-    public void setType(VehicleType type) {
-        this.type = type;
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
     }
 
     public String getManifacture() {
@@ -227,12 +230,20 @@ public class Vehicle {
         isElectric = electric;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void softDelete() {
+        this.isDeleted = true;
+    }
+
     @Override
     public String toString() {
         return "Vehicle{" +
             "id=" + id +
             ", company=" + (company != null ? company.getName() : "None") +
-            ", type=" + type +
+            ", vehicleType=" + vehicleType +
             ", manufacturer='" + manifacture + '\'' +
             ", model='" + model + '\'' +
             ", licensePlate='" + licensePlate + '\'' +
@@ -245,6 +256,7 @@ public class Vehicle {
             ", seatingCapacity=" + seatingCapacity +
             ", requiredDrivingCategory=" + requiredDrivingCategory +
             ", isElectric=" + isElectric +
+            ", isDeleted=" + isDeleted +
             '}';
     }
 }

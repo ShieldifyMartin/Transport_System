@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
-
+import org.example.entity.Staff;
+import org.example.entity.TransportOrder;
+import org.example.entity.Vehicle;
 @Entity
 @Table(name="company")
 public class Company {
@@ -49,12 +51,14 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
     private Set<Vehicle> vehicles;
 
-    // @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
     @OneToMany(mappedBy = "company")
     private Set<Staff> staff;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
     private Set<TransportOrder> transportOrders;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 
     // Constructors
     public Company() {
@@ -160,6 +164,14 @@ public class Company {
         this.transportOrders = transportOrders;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void softDelete() {
+        this.isDeleted = true;
+    }
+
     @Override
     public String toString() {
         return "Company{" +
@@ -171,9 +183,7 @@ public class Company {
             ", entityType='" + entityType + '\'' +
             ", owners='" + owners + '\'' +
             ", initialCapital=" + initialCapital +
-            // ", vehicles=" + (vehicles != null ? vehicles.size() : 0) +
-            // ", staff=" + (staff != null ? staff.size() : 0) +
-            // ", transportOrders=" + (transportOrders != null ? transportOrders.size() : 0) +
+            ", isDeleted=" + isDeleted +
             '}';
     }
 }

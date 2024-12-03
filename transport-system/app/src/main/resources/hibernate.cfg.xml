@@ -2,8 +2,8 @@
     <session-factory>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
-        <property name="hibernate.show_sql">true</property>
-        <property name="hibernate.format_sql">true</property>
+        <!-- <property name="hibernate.show_sql">true</property> -->
+        <!-- <property name="hibernate.format_sql">true</property> -->
         <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/transport-system-db</property>
         <property name="hibernate.connection.username">root</property>
 

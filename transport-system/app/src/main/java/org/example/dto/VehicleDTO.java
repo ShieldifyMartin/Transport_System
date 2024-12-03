@@ -1,28 +1,31 @@
 package org.example.dto;
 
 import java.math.BigDecimal;
+import org.example.entity.enums.VehicleType;
 
 public class VehicleDTO {
     private Long id;
     private Long companyId;
-    private String type;
+    private VehicleType vehicleType;
     private String manifacture;
     private String licensePlate;
     private Integer productionYear;
     private BigDecimal carryingAmount;
     private String requiredDrivingCategory;
+    private boolean isDeleted;
 
     public VehicleDTO() {}
 
-    public VehicleDTO(Long id, Long companyId, String type, String manifacture, String licensePlate, Integer productionYear, BigDecimal carryingAmount, String requiredDrivingCategory) {
+    public VehicleDTO(Long id, Long companyId, VehicleType vehicleType, String manifacture, String licensePlate, Integer productionYear, BigDecimal carryingAmount, String requiredDrivingCategory, boolean isDeleted) {
         this.id = id;
         this.companyId = companyId;
-        this.type = type;
+        this.vehicleType = vehicleType;
         this.manifacture = manifacture;
         this.licensePlate = licensePlate;
         this.productionYear = productionYear;
         this.carryingAmount = carryingAmount;
         this.requiredDrivingCategory = requiredDrivingCategory;
+        this.isDeleted = isDeleted;
     }
 
     public Long getId() {
@@ -41,12 +44,12 @@ public class VehicleDTO {
         this.companyId = companyId;
     }
 
-    public String getType() {
-        return type;
+    public VehicleType getVehicleType() {
+        return vehicleType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
     }
 
     public String getManifacture() {
@@ -89,17 +92,26 @@ public class VehicleDTO {
         this.requiredDrivingCategory = requiredDrivingCategory;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     @Override
     public String toString() {
         return "VehicleDTO{" +
             "id=" + id +
             ", companyId=" + companyId +
-            ", type='" + type + '\'' +
+            ", vehicleType=" + vehicleType +
             ", manufacture='" + manifacture + '\'' +
             ", licensePlate='" + licensePlate + '\'' +
             ", productionYear=" + productionYear +
             ", carryingAmount=" + carryingAmount +
             ", requiredDrivingCategory='" + requiredDrivingCategory + '\'' +
+            ", isDeleted=" + isDeleted +
             '}';
     }
 }

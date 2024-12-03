@@ -54,13 +54,20 @@ public class TransportOrder {
     @PositiveOrZero(message = "Amount must be zero or positive!")
     private BigDecimal amount;
 
+    @NotNull(message = "Payment status cannot be null!")
+    @Column(name = "is_paid")
+    private Boolean isPaid;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     // Constructors
     public TransportOrder() {
     }
 
-    public TransportOrder(Company company, Vehicle vehicle, Driver driver, String departureLocation, 
-                 String destinationLocation, LocalDate departureDate, LocalDate arrivalDate, 
-                 Double distance, TransportType transportType, Integer cargoWeightKg, BigDecimal amount) {
+    public TransportOrder(Company company, Vehicle vehicle, Driver driver, String departureLocation,
+                          String destinationLocation, LocalDate departureDate, LocalDate arrivalDate,
+                          Double distance, TransportType transportType, Integer cargoWeightKg, BigDecimal amount, Boolean isPaid) {
         this.company = company;
         this.vehicle = vehicle;
         this.driver = driver;
@@ -72,6 +79,7 @@ public class TransportOrder {
         this.transportType = transportType;
         this.cargoWeightKg = cargoWeightKg;
         this.amount = amount;
+        this.isPaid = isPaid;
     }
 
     // Getters and Setters
@@ -171,6 +179,22 @@ public class TransportOrder {
         this.amount = amount;
     }
 
+    public Boolean getIsPaid() {
+        return isPaid;
+    }
+
+    public void setIsPaid(Boolean isPaid) {
+        this.isPaid = isPaid;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void softDelete() {
+        this.isDeleted = true;
+    }
+
     @Override
     public String toString() {
         return "TransportOrder{" +
@@ -186,6 +210,8 @@ public class TransportOrder {
             ", transportType=" + transportType +
             ", cargoWeightKg=" + cargoWeightKg +
             ", amount=" + amount +
+            ", isPaid=" + isPaid +
+            ", isDeleted=" + isDeleted +
             '}';
     }
 }

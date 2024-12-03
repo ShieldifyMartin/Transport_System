@@ -1,21 +1,20 @@
 package org.example.dto;
 
 public class CustomerDTO {
-
     private Long id;
-
     private String name;
-
     private String description;
+    private boolean isDeleted;
 
     // Constructors
     public CustomerDTO() {
     }
 
-    public CustomerDTO(Long id, String name, String description) {
+    public CustomerDTO(Long id, String name, String description, boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.isDeleted = isDeleted;
     }
 
     // Getters and Setters
@@ -43,13 +42,21 @@ public class CustomerDTO {
         this.description = description;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     @Override
     public String toString() {
         return "CustomerDTO{" +
             "id=" + id +
             ", name='" + name + '\'' +
             ", description='" + description + '\'' +
+            ", isDeleted=" + isDeleted +
             '}';
-}
-
+    }
 }

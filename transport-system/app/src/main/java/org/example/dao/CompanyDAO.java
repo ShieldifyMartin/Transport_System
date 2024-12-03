@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import jakarta.persistence.NoResultException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -10,14 +11,14 @@ import org.example.entity.Staff;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import jakarta.persistence.NoResultException;
-
 public class CompanyDAO {
     public static Company getCompanyById(long id) {
         Company company;
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            company = session.get(Company.class, id);
+            company = session.createQuery("Select c From Company c where c.id = :id and c.isDeleted = false", Company.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
             transaction.commit();
         }
         return company;
@@ -25,10 +26,10 @@ public class CompanyDAO {
 
     public static List<Company> getCompanies() {
         List<Company> companies;
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             companies = session
-                    .createQuery("Select c From Company c", Company.class)
+                    .createQuery("Select c From Company c where c.isDeleted = false", Company.class)
                     .getResultList();
             transaction.commit();
         }
@@ -36,24 +37,24 @@ public class CompanyDAO {
     }
 
     public static Set<Staff> getCompanyStaff(long id) {
-    Company company = null;
-    try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-        Transaction transaction = session.beginTransaction();
-        try {
-            company = session.createQuery(
-                            "select c from Company c" +
-                                    " join fetch c.staff" +
-                                    " where c.id = :id",
-                            Company.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
-            transaction.commit();
-        } catch (NoResultException e) {
-            transaction.rollback();
+        Company company = null;
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                company = session.createQuery(
+                                "select c from Company c" +
+                                        " join fetch c.staff" +
+                                        " where c.id = :id and c.isDeleted = false",
+                                Company.class)
+                        .setParameter("id", id)
+                        .getSingleResult();
+                transaction.commit();
+            } catch (NoResultException e) {
+                transaction.rollback();
+            }
         }
+        return company != null ? company.getStaff() : Collections.emptySet();
     }
-    return company != null ? company.getStaff() : Collections.emptySet();
-}
 
     public static List<StaffDTO> getCompanyStaffDTO(long id) {
         List<StaffDTO> staff;
@@ -63,7 +64,7 @@ public class CompanyDAO {
                             "select new org.example.dto.StaffDTO(e.id, e.name)" +
                                     " from Staff e" +
                                     " join e.company c " +
-                                    "where c.id = :id",
+                                    "where c.id = :id and c.isDeleted = false", // Filter added here
                             StaffDTO.class)
                     .setParameter("id", id)
                     .getResultList();
@@ -88,10 +89,20 @@ public class CompanyDAO {
         }
     }
 
-    public static void deleteCompany(Company company) {
+    public static void hardDeleteCompany(Company company) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.remove(company);
+            transaction.commit();
+        }
+    }
+
+    public static void softDeleteCompany(Company company) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            // Mark the company as deleted instead of removing it from the database
+            company.softDelete();
+            session.merge(company);
             transaction.commit();
         }
     }

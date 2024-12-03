@@ -7,16 +7,18 @@ public class CompanyDTO {
     private String name;
     private String entityType;
     private LocalDate foundationDate;
+    private boolean isDeleted;
 
     // Constructors
     public CompanyDTO() {
     }
 
-    public CompanyDTO(Long id, String name, String address, String entityType, LocalDate foundationDate) {
+    public CompanyDTO(Long id, String name, String entityType, LocalDate foundationDate, boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.entityType = entityType;
         this.foundationDate = foundationDate;
+        this.isDeleted = isDeleted;
     }
 
     // Getters and Setters
@@ -44,13 +46,20 @@ public class CompanyDTO {
         this.entityType = entityType;
     }
 
-
     public LocalDate getFoundationDate() {
         return foundationDate;
     }
 
     public void setFoundationDate(LocalDate foundationDate) {
         this.foundationDate = foundationDate;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     @Override
@@ -60,6 +69,7 @@ public class CompanyDTO {
             ", name='" + name + '\'' +
             ", entityType='" + entityType + '\'' +
             ", foundationDate=" + foundationDate +
+            ", isDeleted=" + isDeleted +
             '}';
     }
 }

@@ -11,10 +11,12 @@ public class TransportOrderDTO {
     private String destinationLocation;
     private Double distance;
     private BigDecimal amount;
+    private Boolean isPaid;
+    private boolean isDeleted;
 
     public TransportOrderDTO() {}
 
-    public TransportOrderDTO(Long id, Long companyId, Long vehicleId, Long driverId, String departureLocation, String destinationLocation, Double distance, BigDecimal amount) {
+    public TransportOrderDTO(Long id, Long companyId, Long vehicleId, Long driverId, String departureLocation, String destinationLocation, Double distance, BigDecimal amount, Boolean isPaid, boolean isDeleted) {
         this.id = id;
         this.companyId = companyId;
         this.vehicleId = vehicleId;
@@ -23,6 +25,8 @@ public class TransportOrderDTO {
         this.destinationLocation = destinationLocation;
         this.distance = distance;
         this.amount = amount;
+        this.isPaid = isPaid;
+        this.isDeleted = isDeleted;
     }
 
     public Long getId() {
@@ -89,6 +93,22 @@ public class TransportOrderDTO {
         this.amount = amount;
     }
 
+    public Boolean getIsPaid() {
+        return isPaid;
+    }
+
+    public void setIsPaid(Boolean isPaid) {
+        this.isPaid = isPaid;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     @Override
     public String toString() {
         return "TransportOrderDTO{" +
@@ -100,6 +120,8 @@ public class TransportOrderDTO {
             ", destinationLocation='" + destinationLocation + '\'' +
             ", distance=" + distance +
             ", amount=" + amount +
+            ", isPaid=" + isPaid +
+            ", isDeleted=" + isDeleted +
             '}';
     }
 }
