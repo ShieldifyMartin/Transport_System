@@ -2,11 +2,16 @@ package org.example.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.example.dao.StaffDAO;
 import org.example.entity.Staff;
 
+
 public class StaffService {
+    // Standart getter functions
+
     // Get Staff by ID
     public Staff getStaffById(long id) {
         return StaffDAO.getStaffById(id);
@@ -15,6 +20,51 @@ public class StaffService {
     // Get list of all active (non-deleted) staff
     public List<Staff> getActiveStaff() {
         return StaffDAO.getStaff();
+    }
+
+    // Sorting functions
+
+    public List<Staff> sortStaffByName() {
+        return getActiveStaff().stream()
+            .sorted(Comparator.comparing(Staff::getName))
+            .collect(Collectors.toList());
+    }
+
+    // Sorting: Sort staff by salary in descending order
+    public List<Staff> sortStaffBySalaryDesc() {
+        return getActiveStaff().stream()
+                .sorted(Comparator.comparing(Staff::getSalary).reversed())
+                .collect(Collectors.toList());
+    }
+
+    // Filter functions
+
+    public List<Staff> filterStaffByMinSalary(BigDecimal minSalary) {
+        return getActiveStaff().stream()
+            .filter(staff -> staff.getSalary().compareTo(minSalary) >= 0)
+            .collect(Collectors.toList());
+    }
+
+    // Filter staff by position type
+    public List<Staff> filterStaffByPosition(String position) {
+        if (position == null || position.isBlank()) {
+            throw new IllegalArgumentException("Position type cannot be null or blank!");
+        }
+    
+        return getActiveStaff().stream()
+            .filter(staff -> position.equals(staff.getPosition()))
+            .collect(Collectors.toList());
+    }
+    
+    // Advanced Filtering: Filter staff based on multiple criteria
+    public List<Staff> filterStaffAdvanced(String name, Integer minAge, Integer maxAge, BigDecimal minSalary, LocalDate hiredAfter) {
+        return getActiveStaff().stream()
+            .filter(staff -> (name == null || staff.getName().toLowerCase().contains(name.toLowerCase())))
+            .filter(staff -> (minAge == null || staff.getAge() >= minAge))
+            .filter(staff -> (maxAge == null || staff.getAge() <= maxAge))
+            .filter(staff -> (minSalary == null || staff.getSalary().compareTo(minSalary) >= 0))
+            .filter(staff -> (hiredAfter == null || staff.getHiringDate().isAfter(hiredAfter)))
+            .collect(Collectors.toList());
     }
 
     // Save new staff

@@ -9,6 +9,7 @@ import java.util.Set;
 import org.example.entity.Staff;
 import org.example.entity.TransportOrder;
 import org.example.entity.Vehicle;
+
 @Entity
 @Table(name="company")
 public class Company {
@@ -47,6 +48,18 @@ public class Company {
     @Digits(integer = 15, fraction = 2, message = "Initial capital must be a valid monetary amount!")
     @Column(name = "initial_capital", precision = 15, scale = 2)
     private BigDecimal initialCapital;
+
+    @NotNull(message = "Total revenue cannot be null!")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Total revenue must be zero or greater!")
+    @Digits(integer = 20, fraction = 2, message = "Total revenue must be a valid monetary amount!")
+    @Column(name = "total_revenue", precision = 20, scale = 2)
+    private BigDecimal totalRevenue = BigDecimal.ZERO;
+
+    @NotNull(message = "Total expenses cannot be null!")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Total expenses must be zero or greater!")
+    @Digits(integer = 20, fraction = 2, message = "Total expenses must be a valid monetary amount!")
+    @Column(name = "total_expenses", precision = 20, scale = 2)
+    private BigDecimal totalExpenses = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
     private Set<Vehicle> vehicles;
@@ -140,6 +153,22 @@ public class Company {
         this.initialCapital = initialCapital;
     }
 
+    public BigDecimal getTotalRevenue() {
+        return totalRevenue;
+    }
+
+    public void setTotalRevenue(BigDecimal totalRevenue) {
+        this.totalRevenue = totalRevenue;
+    }
+
+    public BigDecimal getTotalExpenses() {
+        return totalExpenses;
+    }
+
+    public void setTotalExpenses(BigDecimal totalExpenses) {
+        this.totalExpenses = totalExpenses;
+    }
+
     public Set<Vehicle> getVehicles() {
         return vehicles;
     }
@@ -183,6 +212,8 @@ public class Company {
             ", entityType='" + entityType + '\'' +
             ", owners='" + owners + '\'' +
             ", initialCapital=" + initialCapital +
+            ", totalRevenue=" + totalRevenue +
+            ", totalExpenses=" + totalExpenses +
             ", isDeleted=" + isDeleted +
             '}';
     }

@@ -36,6 +36,18 @@ public class CompanyDAO {
         return companies;
     }
 
+    public static List<Company> getAllCompanies() {
+        List<Company> companies;
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            companies = session
+                    .createQuery("Select c From Company c", Company.class)
+                    .getResultList();
+            transaction.commit();
+        }
+        return companies;
+    }
+
     public static Set<Staff> getCompanyStaff(long id) {
         Company company = null;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
@@ -89,17 +101,28 @@ public class CompanyDAO {
         }
     }
 
-    public static void hardDeleteCompany(Company company) {
+    public static void hardDeleteCompanyById(long id) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
+            
+            Company company = session.get(Company.class, id);
+            if (company == null) {
+                throw new IllegalArgumentException("Company with ID " + id + " does not exist.");
+            }
             session.remove(company);
             transaction.commit();
         }
     }
 
-    public static void softDeleteCompany(Company company) {
+    public static void softDeleteCompanyById(long id) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
+
+            Company company = session.get(Company.class, id);
+            if (company == null) {
+                throw new IllegalArgumentException("Company with ID " + id + " does not exist.");
+            }
+            
             // Mark the company as deleted instead of removing it from the database
             company.softDelete();
             session.merge(company);

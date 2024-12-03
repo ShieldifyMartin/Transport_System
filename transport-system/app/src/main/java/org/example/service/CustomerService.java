@@ -1,11 +1,17 @@
 package org.example.service;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.example.dao.CustomerDAO;
 import org.example.entity.Customer;
+import org.example.entity.enums.LoyaltyStatus;
+
 
 public class CustomerService {
+    // Standart getter functions
+
     // Method to fetch a customer by ID
     public Customer getCustomerById(long id) {
         Customer customer = CustomerDAO.getCustomerById(id);
@@ -13,6 +19,40 @@ public class CustomerService {
             throw new IllegalArgumentException("Customer with ID " + id + " does not exist.");
         }
         return customer;
+    }
+
+    // Sorting functions
+
+    // Sort customers by name
+    public List<Customer> getCustomersSortedByName() {
+        return CustomerDAO.getCustomers().stream()
+                .sorted(Comparator.comparing(Customer::getName))
+                .collect(Collectors.toList());
+    }
+
+    // Sort customers by 'money_spent' (ascending)
+    public List<Customer> getCustomersSortedByMoneySpent() {
+        return CustomerDAO.getCustomers().stream()
+                .sorted(Comparator.comparing(Customer::getMoney_spent))
+                .collect(Collectors.toList());
+    }
+
+    // Filter functions
+
+    // Filter function (Simple Filtering by Loyalty Status)
+    public List<Customer> getCustomersByLoyaltyStatus(LoyaltyStatus loyaltyStatus) {
+        return CustomerDAO.getCustomers().stream()
+            .filter(customer -> customer.getLoyalty_status() == loyaltyStatus)
+            .collect(Collectors.toList());
+    }
+
+    // Advanced Filtering Function (Multiple Conditions)
+    public List<Customer> getCustomersByAdvancedFilter(LoyaltyStatus loyaltyStatus, BigDecimal minMoneySpent, BigDecimal maxMoneySpent) {
+        return CustomerDAO.getCustomers().stream()
+            .filter(customer -> (loyaltyStatus == null || customer.getLoyalty_status() == loyaltyStatus) &&
+                                (minMoneySpent == null || customer.getMoney_spent().compareTo(minMoneySpent) >= 0) &&
+                                (maxMoneySpent == null || customer.getMoney_spent().compareTo(maxMoneySpent) <= 0))
+            .collect(Collectors.toList());
     }
 
     // Method to fetch all customers

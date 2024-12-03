@@ -1,11 +1,9 @@
 package org.example.entity;
 
-import jakarta.validation.constraints.*;
-import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.example.entity.enums.TransportType;
+
 
 @Entity
 @Table(name = "transport_order")

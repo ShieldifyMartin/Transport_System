@@ -2,12 +2,15 @@ package org.example.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.example.dao.CompanyDAO;
 import org.example.dto.StaffDTO;
 import org.example.entity.Company;
 import org.example.entity.Staff;
+
 
 public class CompanyService {
     private CompanyDAO companyDAO;
@@ -15,6 +18,8 @@ public class CompanyService {
     public CompanyService() {
         this.companyDAO = new CompanyDAO();
     }
+
+    // Standart getter functions
 
     public Company getCompanyById(long id) {
         return companyDAO.getCompanyById(id);
@@ -24,6 +29,10 @@ public class CompanyService {
         return companyDAO.getCompanies();
     }
 
+    public List<Company> getAllCompanies() {
+        return companyDAO.getAllCompanies();
+    }
+
     public Set<Staff> getCompanyStaff(long companyId) {
         return companyDAO.getCompanyStaff(companyId);
     }
@@ -31,6 +40,66 @@ public class CompanyService {
     public List<StaffDTO> getCompanyStaffDTO(long companyId) {
         return companyDAO.getCompanyStaffDTO(companyId);
     }
+
+    // Sorting getter functions
+
+    // Get all companies sorted by name
+    public List<Company> getCompaniesSortedByName() {
+        return companyDAO.getCompanies().stream()
+                .sorted(Comparator.comparing(Company::getName))
+                .collect(Collectors.toList());
+    }
+
+    // Get all companies sorted by total revenue (largest first)
+    public List<Company> getCompaniesSortedByLargestRevenue() {
+        return companyDAO.getCompanies().stream()
+            .sorted(Comparator.comparing(Company::getTotalRevenue, Comparator.reverseOrder())) // Descending order
+            .collect(Collectors.toList());
+    }
+
+    // Filter functions
+
+    // Get companies filtered by name containing a keyword
+    public List<Company> getCompaniesByNameKeyword(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            throw new IllegalArgumentException("Keyword cannot be null or empty");
+        }
+        return companyDAO.getCompanies().stream()
+            .filter(company -> company.getName().toLowerCase().contains(keyword.toLowerCase()))
+            .collect(Collectors.toList());
+    }
+
+    public List<Company> filterCompanies(String name, 
+        String address, 
+        LocalDate foundationDateStart, 
+        LocalDate foundationDateEnd, 
+        String VAT, 
+        String entityType, 
+        BigDecimal initialCapitalMin, 
+        BigDecimal initialCapitalMax, 
+        BigDecimal totalRevenueMin, 
+        BigDecimal totalRevenueMax, 
+        BigDecimal totalExpensesMin, 
+        BigDecimal totalExpensesMax, 
+        Boolean isDeleted) {
+    return companyDAO.getCompanies().stream()
+        .filter(company -> name == null || company.getName().equalsIgnoreCase(name))
+        .filter(company -> address == null || company.getAddress().contains(address))
+        .filter(company -> foundationDateStart == null || !company.getFoundationDate().isBefore(foundationDateStart))
+        .filter(company -> foundationDateEnd == null || !company.getFoundationDate().isAfter(foundationDateEnd))
+        .filter(company -> VAT == null || company.getVAT().equalsIgnoreCase(VAT))
+        .filter(company -> entityType == null || company.getEntityType().equalsIgnoreCase(entityType))
+        .filter(company -> initialCapitalMin == null || company.getInitialCapital().compareTo(initialCapitalMin) >= 0)
+        .filter(company -> initialCapitalMax == null || company.getInitialCapital().compareTo(initialCapitalMax) <= 0)
+        .filter(company -> totalRevenueMin == null || company.getTotalRevenue().compareTo(totalRevenueMin) >= 0)
+        .filter(company -> totalRevenueMax == null || company.getTotalRevenue().compareTo(totalRevenueMax) <= 0)
+        .filter(company -> totalExpensesMin == null || company.getTotalExpenses().compareTo(totalExpensesMin) >= 0)
+        .filter(company -> totalExpensesMax == null || company.getTotalExpenses().compareTo(totalExpensesMax) <= 0)
+        .filter(company -> isDeleted == null || company.isDeleted() == isDeleted)
+        .collect(Collectors.toList());
+    }
+
+    // Core logic
 
     public void saveCompany(Company company) {
         validateCompany(company);
@@ -43,21 +112,22 @@ public class CompanyService {
     }
 
     // Soft delete company (mark as deleted)
-    public void deleteCompany(Company company) {
-        if (company == null || company.getId() == 0) {
-            throw new IllegalArgumentException("Invalid company");
+    public void deleteCompany(long id) {
+        if (getCompanyById(id) == null || id == 0) {
+            throw new IllegalArgumentException("Invalid company id");
         }
-        companyDAO.softDeleteCompany(company);
+        companyDAO.softDeleteCompanyById(id);
     }
 
     // Hard delete company (mark as deleted)
-    public void hardDeleteCompany(Company company) {
-        if (company == null || company.getId() == 0) {
+    public void hardDeleteCompany(long id) {
+        if (getCompanyById(id) == null || id == 0) {
             throw new IllegalArgumentException("Invalid company");
         }
-        companyDAO.hardDeleteCompany(company);
+        companyDAO.hardDeleteCompanyById(id);
     }
 
+    // Helper validation function
     private void validateCompany(Company company) {
         // Check if company is null
         if (company == null) {
@@ -126,6 +196,26 @@ public class CompanyService {
         // Check decimal scale of initial capital (max 2 decimals)
         if (company.getInitialCapital().scale() > 2) {
             throw new IllegalArgumentException("Initial capital must be a valid monetary amount with up to 2 decimal places");
-        }        
+        }
+
+        // Check if total revenue is null or negative
+        if (company.getTotalRevenue() == null || company.getTotalRevenue().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Total revenue must be zero or greater and cannot be null");
+        }
+
+        // Check decimal scale of total revenue (max 2 decimals)
+        if (company.getTotalRevenue().scale() > 2) {
+            throw new IllegalArgumentException("Total revenue must be a valid monetary amount with up to 2 decimal places");
+        }
+
+        // Check if total expenses are null or negative
+        if (company.getTotalExpenses() == null || company.getTotalExpenses().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Total expenses must be zero or greater and cannot be null");
+        }
+
+        // Check decimal scale of total expenses (max 2 decimals)
+        if (company.getTotalExpenses().scale() > 2) {
+            throw new IllegalArgumentException("Total expenses must be a valid monetary amount with up to 2 decimal places");
+        }
     }
 }

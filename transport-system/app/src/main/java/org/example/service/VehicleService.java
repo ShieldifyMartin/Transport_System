@@ -3,11 +3,13 @@ package org.example.service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.example.dao.VehicleDAO;
 import org.example.entity.Vehicle;
 
-
 public class VehicleService {
+    // Standart getter functions
+
     // Get a list of all vehicles
     public List<Vehicle> getAllVehicles() {
         return VehicleDAO.getVehicles();
@@ -16,6 +18,46 @@ public class VehicleService {
     // Get a specific vehicle by ID
     public Vehicle getVehicleById(long id) {
         return VehicleDAO.getVehicleById(id);
+    }
+
+    // Sorting functions
+
+    // Sorting by mileage in ascending order
+    public List<Vehicle> sortByMileageAscending() {
+        return getAllVehicles().stream()
+            .sorted((v1, v2) -> Double.compare(v1.getMileageKm(), v2.getMileageKm()))
+            .collect(Collectors.toList());
+    }
+
+    // Sorting by production year in descending order
+    public List<Vehicle> sortByProductionYearDescending() {
+        return getAllVehicles().stream()
+            .sorted((v1, v2) -> Integer.compare(v2.getProductionYear(), v1.getProductionYear()))
+            .collect(Collectors.toList());
+    }
+
+    // Filter functions
+
+    // Filter vehicles by manufacturer
+    public List<Vehicle> filterByManufacturer(String manufacturer) {
+        if (manufacturer == null || manufacturer.isBlank()) {
+            throw new IllegalArgumentException("Manufacturer cannot be null or blank!");
+        }
+
+        return VehicleDAO.getVehicles().stream()
+            .filter(vehicle -> manufacturer.equalsIgnoreCase(vehicle.getManifacture()))
+            .collect(Collectors.toList());
+    }
+
+    // Advanced filter: filter by multiple criteria
+    public List<Vehicle> filterByAdvancedCriteria(
+            String manufacturer, Integer minYear, Integer maxYear, boolean includeElectric) {
+        return getAllVehicles().stream()
+            .filter(vehicle -> (manufacturer == null || vehicle.getManifacture().equalsIgnoreCase(manufacturer)))
+            .filter(vehicle -> (minYear == null || vehicle.getProductionYear() >= minYear))
+            .filter(vehicle -> (maxYear == null || vehicle.getProductionYear() <= maxYear))
+            .filter(vehicle -> (includeElectric || !vehicle.isElectric()))
+            .collect(Collectors.toList());
     }
 
     // Save a new vehicle

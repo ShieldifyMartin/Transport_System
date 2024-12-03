@@ -3,6 +3,7 @@ package org.example;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.example.entity.Company;
 import org.example.entity.Customer;
@@ -23,6 +24,7 @@ import org.example.service.TransportOrderService;
 import org.example.service.VehicleService;
 import org.example.utils.DataSeeder;
 
+import static org.example.utils.CompanyUtils.generateRandomVAT;
 
 public class App {
     public static void main(String[] args) {
@@ -42,7 +44,7 @@ public class App {
             "ABC Transport",
             "123 Transport Street, City, Country",
             LocalDate.of(2010, 5, 1),
-            "VAT029416789",
+            generateRandomVAT(),
             "Logistics",
             "John Doe, Jane Smith",
             new BigDecimal("5000000.00")
@@ -54,13 +56,15 @@ public class App {
         if (existingCompany != null) {
             existingCompany.setName("Global Transport Ltd.");
             existingCompany.setAddress("456 Broad Ave");
+            existingCompany.setTotalRevenue(BigDecimal.valueOf(10_000));
+            existingCompany.setTotalExpenses(BigDecimal.valueOf(5_000));
             companyService.updateCompany(existingCompany);
             System.out.println("Updated Company: " + existingCompany);
         } else {
             System.out.println("No company found with ID 1");
         }
 
-        companyService.hardDeleteCompany(newCompany);
+        companyService.hardDeleteCompany(newCompany.getId());
         System.out.println("Deleted Company with ID 2");
 
         // Functionality 2: CRUD operations for clients
@@ -167,6 +171,7 @@ public class App {
                 existingTransportOrder.setTransportType(TransportType.CARGO_TRANSPORTATION);
                 existingTransportOrder.setAmount(BigDecimal.valueOf(3000.0));
                 transportOrderService.updateTransportOrder(existingTransportOrder);
+                transportOrderService.completeTransportOrder(existingTransportOrder);
                 System.out.println("Updated Transport: " + existingTransportOrder);
             }
 
@@ -176,5 +181,30 @@ public class App {
         } else {
             System.out.println("Vehicle or Driver not found for Transport operations.");
         }
+
+        // Functionality 6: Save and load transport orders from an external file
+        
+        // Save transport orders to file
+        String filePath = "transport_orders.csv";
+        transportOrderService.saveTransportOrdersToFile(filePath);
+        System.out.println("Transport orders saved to file: " + filePath);
+
+        // Load transport orders from file
+        List<TransportOrder> loadedTransportOrders = transportOrderService.loadTransportOrdersFromFile(filePath);
+        System.out.println("Transport orders loaded from file:");
+        for (TransportOrder order : loadedTransportOrders) {
+            System.out.println(order);
+        }
+        transportOrderService.exportFullReportToFile();
+
+        // Load all active companies
+        List<Company> companies = companyService.getCompanies();
+        System.out.println("All active companies:");
+        companies.forEach(company -> System.out.println(company));
+
+        // Load all companies (including soft deleted ones)
+        List<Company> allCompanies = companyService.getAllCompanies();
+        System.out.println("All companies:");
+        allCompanies.forEach(company -> System.out.println(company));
     }
 }
