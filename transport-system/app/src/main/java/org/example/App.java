@@ -197,6 +197,9 @@ public class App {
         }
         transportOrderService.exportFullReportToFile();
 
+        // Pay salaries
+        companyService.paySalaries(existingCompany.getId());
+
         // Load all active companies
         List<Company> companies = companyService.getCompanies();
         System.out.println("All active companies:");

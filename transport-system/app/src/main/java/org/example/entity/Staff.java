@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import org.example.entity.enums.Position;
 
 @Entity
@@ -57,6 +58,9 @@ public class Staff {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
+
+    @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SalaryPayment> salaryPayments;
 
     // Constructors
     public Staff() {
@@ -152,6 +156,14 @@ public class Staff {
 
     public void softDelete() {
         this.isDeleted = true;
+    }
+
+    public List<SalaryPayment> getSalaryPayments() {
+        return salaryPayments;
+    }
+    
+    public void setSalaryPayments(List<SalaryPayment> salaryPayments) {
+        this.salaryPayments = salaryPayments;
     }
 
     @Override

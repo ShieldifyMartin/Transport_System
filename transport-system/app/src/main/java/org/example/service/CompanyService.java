@@ -6,10 +6,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.example.configuration.SessionFactoryUtil;
 import org.example.dao.CompanyDAO;
 import org.example.dto.StaffDTO;
 import org.example.entity.Company;
+import org.example.entity.SalaryPayment;
 import org.example.entity.Staff;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 
 public class CompanyService {
@@ -39,6 +43,16 @@ public class CompanyService {
 
     public List<StaffDTO> getCompanyStaffDTO(long companyId) {
         return companyDAO.getCompanyStaffDTO(companyId);
+    }
+
+    public BigDecimal calculateTotalSalaryExpenses(long companyId) {
+        Set<Staff> staffMembers = companyDAO.getCompanyStaff(companyId);
+
+        BigDecimal totalSalaries = staffMembers.stream()
+            .map(Staff::getSalary)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return totalSalaries;
     }
 
     // Sorting getter functions
@@ -126,6 +140,68 @@ public class CompanyService {
         }
         companyDAO.hardDeleteCompanyById(id);
     }
+
+    // Fetch update with the current total expenses
+    public void updateCompanyExpenses(long companyId) {
+        Company company = companyDAO.getCompanyById(companyId);
+        BigDecimal salaryExpenses = calculateTotalSalaryExpenses(companyId);
+    
+        company.setTotalExpenses(
+            company.getTotalExpenses().add(salaryExpenses)
+        );
+    
+        companyDAO.updateCompany(company);
+    }
+
+    public Staff getStaffWithSalaryPayments(Long staffId) {
+        Staff staff;
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            staff = session.createQuery(
+                    "SELECT s FROM Staff s LEFT JOIN FETCH s.salaryPayments WHERE s.id = :id AND s.isDeleted = false",
+                    Staff.class
+                )
+                .setParameter("id", staffId)
+                .getSingleResult();
+            transaction.commit();
+        }
+        return staff;
+    }    
+
+    public void paySalaries(long companyId) {
+        Set<Staff> staffList = getCompanyStaff(companyId);
+        LocalDate currentMonth = LocalDate.now().withDayOfMonth(1);
+    
+        BigDecimal totalPaid = BigDecimal.ZERO;
+    
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+    
+            for (Staff staff : staffList) {
+                // Use getStaffWithSalaryPayments to retrieve the staff with initialized salaryPayments
+                Staff staffWithPayments = getStaffWithSalaryPayments(staff.getId());
+    
+                boolean alreadyPaid = staffWithPayments.getSalaryPayments().stream()
+                    .anyMatch(payment -> payment.getPaymentDate().equals(currentMonth));
+    
+                if (!alreadyPaid) {
+                    SalaryPayment payment = new SalaryPayment(
+                        staffWithPayments, 
+                        currentMonth, 
+                        staffWithPayments.getSalary()
+                    );
+                    staffWithPayments.getSalaryPayments().add(payment);
+                    session.persist(payment);
+                    totalPaid = totalPaid.add(staffWithPayments.getSalary());
+                }
+            }
+    
+            transaction.commit();
+        }
+    
+        // Update the company's total expenses with the new salaries paid
+        CompanyDAO.addExpenses(companyId, totalPaid);
+    }    
 
     // Helper validation function
     private void validateCompany(Company company) {

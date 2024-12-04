@@ -17,6 +17,7 @@ public class SessionFactoryUtil {
             configuration.addAnnotatedClass(Driver.class);
             configuration.addAnnotatedClass(TransportOrder.class);
             configuration.addAnnotatedClass(Vehicle.class);
+            configuration.addAnnotatedClass(SalaryPayment.class);
             ServiceRegistry serviceRegistry
                     = new StandardServiceRegistryBuilder()
                     .configure("hibernate.cfg.xml").build();

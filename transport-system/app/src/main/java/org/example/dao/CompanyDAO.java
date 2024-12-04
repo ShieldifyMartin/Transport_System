@@ -1,6 +1,7 @@
 package org.example.dao;
 
 import jakarta.persistence.NoResultException;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +11,7 @@ import org.example.entity.Company;
 import org.example.entity.Staff;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
 
 public class CompanyDAO {
     public static Company getCompanyById(long id) {
@@ -125,6 +127,31 @@ public class CompanyDAO {
             
             // Mark the company as deleted instead of removing it from the database
             company.softDelete();
+            session.merge(company);
+            transaction.commit();
+        }
+    }
+
+    public static void addExpenses(long companyId, BigDecimal additionalExpenses) {
+        if (additionalExpenses == null || additionalExpenses.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Additional expenses must be a positive value.");
+        }
+
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            // Fetch the company
+            Company company = session.get(Company.class, companyId);
+            if (company == null) {
+                transaction.rollback();
+                throw new IllegalArgumentException("Company with ID " + companyId + " does not exist.");
+            }
+
+            // Update total expenses
+            BigDecimal newTotalExpenses = company.getTotalExpenses().add(additionalExpenses);
+            company.setTotalExpenses(newTotalExpenses);
+
+            // Save the updated company
             session.merge(company);
             transaction.commit();
         }
