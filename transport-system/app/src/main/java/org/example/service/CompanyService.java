@@ -183,19 +183,21 @@ public class CompanyService {
     
                 boolean alreadyPaid = staffWithPayments.getSalaryPayments().stream()
                     .anyMatch(payment -> payment.getPaymentDate().equals(currentMonth));
-    
                 if (!alreadyPaid) {
                     SalaryPayment payment = new SalaryPayment(
                         staffWithPayments, 
                         currentMonth, 
                         staffWithPayments.getSalary()
                     );
+                    
                     staffWithPayments.getSalaryPayments().add(payment);
                     session.persist(payment);
                     totalPaid = totalPaid.add(staffWithPayments.getSalary());
                 }
             }
-    
+
+            // update company expenses
+            updateCompanyExpenses(companyId);
             transaction.commit();
         }
     

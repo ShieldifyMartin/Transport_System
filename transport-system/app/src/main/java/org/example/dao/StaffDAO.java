@@ -13,9 +13,11 @@ public class StaffDAO {
         Staff staff;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            staff = session.createQuery("SELECT s FROM Staff s WHERE s.id = :id AND s.isDeleted = false", Staff.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
+            staff = session.createQuery(
+                    "SELECT s FROM Staff s LEFT JOIN FETCH s.drivingCategories " + 
+                    "WHERE s.id = :id AND s.isDeleted = false", Staff.class)
+                .setParameter("id", id)
+                .getSingleResult();
             transaction.commit();
         }
         return staff;
@@ -26,9 +28,10 @@ public class StaffDAO {
         List<Staff> staff;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            staff = session
-                    .createQuery("SELECT s FROM Staff s WHERE s.isDeleted = false", Staff.class)
-                    .getResultList();
+            staff = session.createQuery(
+                    "SELECT s FROM Staff s LEFT JOIN FETCH s.drivingCategories " +
+                    "WHERE s.isDeleted = false", Staff.class)
+                .getResultList();
             transaction.commit();
         }
         return staff;

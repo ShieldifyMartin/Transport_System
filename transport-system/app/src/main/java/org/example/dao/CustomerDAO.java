@@ -33,6 +33,19 @@ public class CustomerDAO {
         return customers;
     }
 
+    // Get list of all customers
+    public static List<Customer> getAllCustomers() {
+        List<Customer> customers;
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            customers = session
+                    .createQuery("SELECT c FROM Customer c", Customer.class)
+                    .getResultList();
+            transaction.commit();
+        }
+        return customers;
+    }
+
     // Save customer
     public static void saveCustomer(Customer customer) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {

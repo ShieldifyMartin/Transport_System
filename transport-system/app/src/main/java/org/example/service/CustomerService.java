@@ -56,8 +56,12 @@ public class CustomerService {
     }
 
     // Method to fetch all customers
-    public List<Customer> getAllCustomers() {
+    public List<Customer> getCustomers() {
         return CustomerDAO.getCustomers();
+    }
+
+    public List<Customer> getAllCustomers() {
+        return CustomerDAO.getAllCustomers();
     }
 
     // Method to save a new customer

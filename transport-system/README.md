@@ -1,49 +1,49 @@
 # Transport Companies Management System Documentation
 
 ## Overview
-This **Transport Companies Management System** is a Java application designed to simulate the operations of a different kind of transport companies. It handles various functionalities including managing inventory, processing sales, calculating profits, and managing cashiers and checkouts. The system also handles exceptions such as insufficient stock and out-of-stock scenarios.
+This **Transport Companies Management System** is a Java application designed to simulate the operations of a different kind of transport companies.
 
-The **SOLID** principles are mostly followed, with a few minor exceptions, such as the Single Responsibility Principle in the `sellProducts()` function and the **Interface Segregation Principle**.
+The system is designed to help transport companies streamline their operations effectively. Each transport company manages vehicles and employees as part of their workflow. The core activity of these companies involves transporting goods and passengers to various destinations. Each transport is defined by key details such as the starting point, destination, departure date, and arrival date. Additionally, the nature of the transported items must be clearly specified. If goods are being transported, the total weight of the cargo needs to be recorded.
 
-The **Facade** design pattern is used to provide a simplified interface to a complex subsystem. The `StoreService` class encapsulates the complexities of managing the Store class's operations. The client code interacts only with the StoreService for performing tasks, ensuring that changes in the Store class do not affect the client code directly. By using the Facade pattern, the code ensures that interactions with the `Store` class are streamlined, reducing the complexity and making the system easier to use and maintain.
+Transport companies can register their transport activities and set prices for each trip. The vehicles in their fleet come in various types, including buses, trucks, tankers, and more. Drivers operating these vehicles possess different qualifications, tailored to the specific requirements of their roles.
+
+The **SOLID** principles are mostly strictly followed, with an exception of the Interface Segregation Principle.
+
+Some of the used design patterns are **Observer Pattern** for multi entities updates for the salaries payments for example and **Strategy Pattern** for the filtering data logic.
 
 ## Technology Stack
-Java, Hibernate, JUnit, Java Streams API, Gradle
+
+##### Programming Language: Java
+##### ORM: Hibernate
+##### Testing Framework: JUnit
+##### Data Processing: Java Streams API
+##### Build Tool: Gradle
 
 ## Key Features
 
-### Inventory Management
-This feature allows store managers to add new products to the inventory and remove products that are no longer available or expired. It helps in keeping the inventory updated, ensuring that only available products are listed for sale.
+### Transport Company Operations 
+Load, create, edit, and delete transport company records. Each company profile includes key details such as revenue & expenses, the employees they hire, the vehicles they use, the transport orders they handle etc.
 
-### Sales Processing
-Handles the entire process of selling products, including checking stock availability, updating inventory, and generating receipts. Ensures accurate transaction processing and inventory management, reducing errors and enhancing customer satisfaction.
-Handle sales transactions, including applying markups and discounts.
+### Customers Operations
+Load, create, edit, and delete transport company customers records. Each customer profile captures key details such as contact information, loyalty status, total lifetime spending, the date of their first engagement with the company, and more.
 
-### Exception Handling
-Manages exceptions related to out-of-stock and insufficient stock scenarios, ensuring that customers are informed about stock issues promptly. Enhances the reliability of the system by preventing transactions that cannot be fulfilled due to stock issues.
+### Vehicles Operations
+Load, create, edit, and delete transport company vehicles records. Each vehicle profile captures key details such as vehicle type, manifacturer & model, the current carrying amount, the driving category that it requires, and more technical specifications.
 
-### Financial Calculations
-Calculates the store's revenue from sales and determines the profit by subtracting expenses from the revenue. Provides accurate financial insights, helping store managers make informed business decisions.
+### Staff Operations
+Load, create, edit, and delete transport company employees records. Each staff profile includes essential details such as their position, current salary, annual bonuses, hiring date, contract terms, and salary payment history.
 
-### Receipt Processing
-Generates detailed receipts on sales in a separate file for the user while providing additional insights into the store's performance. This helps in monitoring the store’s financial health and identifying areas for improvement.
+### Transport Orders Operations
+Load, create, edit, and delete transport company orders records. Each order profile includes essential details such as the order type, the driver and vehicle assigned to it, departure and destination locations and dates, as well as the payment status.
 
-### Customer Management
-Manage customer information, including balance and transaction history, to enhance customer service. This would enable personalized service and better management of customer relationships in the future developement and marketing campaigns.
+### Sorting & Filtering Data and Detailed Report Generation
+- There are mulptiple function which allows the user to fetch sorted and filtered data by different arguments and there are also custom filtering functionality for all components of the application.
 
-### Employee Management
-Manage cashiers and checkouts, including adding new cashiers and assigning them to checkouts. This ensures efficient allocation of human resources and smooth operation of the store.
+- There is an option to save the transport data in a file and the ability to retrieve and display this data.
+
+- Display reports for the total number of transportations performed, the total amount of transportations performed, a list of drivers and how many transportations each of them has performed, the company's revenue for a certain period of time, how much revenue each of the drivers has, etc.
 
 ## Roadmap
-- Enhanced User Interface: Develop a graphical user interface (GUI) for easier interaction with the system.
-- Automated Restocking: Implement an automated system to reorder products when stock falls below a certain threshold.
-- Advanced Reporting: Add detailed sales and financial reports to provide insights into the store’s performance.
-- Special Offers: Add functionality to create special offers containing multiple products.
-- Customer Loyalty Program: Introduce a loyalty program to reward repeat customers with discounts and special offers.
-- Multilingual UX: Add support for multiple languages to cater to a diverse customer base in the project's entry point (`App.java`).
-- Integration of third-party systems, such as payment gateways and supply chain management systems, enhancing the efficiency of the store by automating various processes and reducing manual effort.
-- Implementation of the followin design patterns:
-   - **Factory Pattern:**
-The class has methods like `sellProducts()` which involve creating complex objects (e.g., `Receipt`). This method can be extracted into a factory class or method to handle the creation of `Receipt` objects.
-   - **Strategy Pattern:**
-The `applyMarkup()` and `applyDiscount()` methods implement different strategies for calculating prices based on product type and expiration date. These can be refactored into separate strategy classes.
+- Enhanced Role-Based Access Control
+- Development of web and mobile front-end applications to enhance user experience (UX)
+- Real-Time Notifications about scheduled orders, salary payments, employees notice period and others

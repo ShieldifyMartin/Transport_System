@@ -56,9 +56,8 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(Long id, String name, String description, LocalDate customer_since, Company company,
+    public Customer(String name, String description, LocalDate customer_since, Company company,
                     LoyaltyStatus loyalty_status, BigDecimal money_spent, String phone, String address, String email) {
-        this.id = id;
         this.name = name;
         this.description = description;
         this.customer_since = customer_since;

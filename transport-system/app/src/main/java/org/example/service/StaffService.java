@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.example.dao.StaffDAO;
 import org.example.entity.Staff;
 
-
 public class StaffService {
     // Standart getter functions
 
@@ -33,8 +32,8 @@ public class StaffService {
     // Sorting: Sort staff by salary in descending order
     public List<Staff> sortStaffBySalaryDesc() {
         return getActiveStaff().stream()
-                .sorted(Comparator.comparing(Staff::getSalary).reversed())
-                .collect(Collectors.toList());
+            .sorted(Comparator.comparing(Staff::getSalary).reversed())
+            .collect(Collectors.toList());
     }
 
     // Filter functions
