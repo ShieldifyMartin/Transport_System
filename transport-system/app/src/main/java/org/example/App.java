@@ -5,10 +5,8 @@ import java.util.List;
 import org.example.entity.Company;
 import org.example.entity.Customer;
 import org.example.entity.Driver;
-import org.example.entity.Staff;
 import org.example.entity.TransportOrder;
 import org.example.entity.Vehicle;
-import org.example.entity.enums.Position;
 import org.example.entity.enums.TransportType;
 import org.example.entity.enums.VehicleType;
 import org.example.service.CompanyService;
@@ -36,6 +34,12 @@ public class App {
         System.out.println("\nSeeding initial data...");
         DataSeeder.seed(companyService, customerService, driverService, staffService, transportOrderService, vehicleService);
 
+        // Company existing = companyService.getCompanyById(1);
+        // Company notExisting = companyService.getCompanyById(11131231);
+        // System.out.println("Exsisting Company: " + existing);
+        // System.out.println("Not exsisting Company: " + notExisting);
+        // System.exit(0);
+
         // --- Functionality 1: Update and get operations for companies ---
         System.out.println("\nUpdating and retrieving company details...");
         Company existingCompany = companyService.getCompanyById(1);
@@ -60,7 +64,7 @@ public class App {
 
         // --- Functionality 3: Update and get operations for vehicles ---
         System.out.println("\nUpdating and retrieving vehicle details...");
-        Vehicle existingVehicle = vehicleService.getVehicleById(1);
+        Vehicle existingVehicle = vehicleService.getVehicleById(2);
         if (existingVehicle != null) {
             existingVehicle.setModel("Volvo FH");
             existingVehicle.setVehicleType(VehicleType.VAN);
@@ -69,14 +73,14 @@ public class App {
         }
 
         // --- Functionality 4: Update and get operations for staff ---
-        System.out.println("\nUpdating and retrieving staff details...");
-        Staff existingStaff = staffService.getStaffById(1);
-        if (existingStaff != null) {
-            existingStaff.setName("Bob Williams");
-            existingStaff.setPosition(Position.MANAGER);
-            staffService.updateStaff(existingStaff);
-            System.out.println("Updated Staff: " + existingStaff);
-        }
+        // System.out.println("\nUpdating and retrieving staff details...");
+        // Staff existingStaff = staffService.getStaffById(2);
+        // if (existingStaff != null) {
+        //     existingStaff.setName("Bob Williams");
+        //     existingStaff.setPosition(Position.MANAGER);
+        //     staffService.updateStaff(existingStaff);
+        //     System.out.println("Updated Staff: " + existingStaff);
+        // }
 
         // --- Functionality 4.1: Update and get operations for drivers ---
         System.out.println("\nUpdating and retrieving driver details...");
@@ -86,6 +90,11 @@ public class App {
             existingDriver.setTotalFinesAndSanctions(new BigDecimal("200.00"));
             driverService.updateDriver(existingDriver);
             System.out.println("Updated Driver: " + existingDriver);
+            Driver savedDriver = (Driver) staffService.getStaffById(existingDriver.getId());
+            Driver savedDriver1 = driverService.getDriverById(existingDriver.getId());
+            System.out.println("HEREEEE: " + savedDriver);
+            System.out.println("HEREEEE: " + savedDriver1);
+            System.exit(0);
         }
 
         // --- Functionality 5: Record transport data ---

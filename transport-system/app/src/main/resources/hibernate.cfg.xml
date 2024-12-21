@@ -6,6 +6,8 @@
         <!-- <property name="hibernate.format_sql">true</property> -->
         <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/transport-system-db</property>
         <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">1234</property>
+        <property name="hibernate.connection.autocommit">true</property>
 
         <!-- <mapping class="org.example.entity.Company"/>
         <mapping class="org.example.entity.Staff"/>

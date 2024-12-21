@@ -10,6 +10,7 @@ import org.example.entity.enums.Position;
 
 @Entity
 @Table(name = "staff")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,9 +46,8 @@ public class Staff {
     @Column(name = "hiring_date", nullable = false)
     private LocalDate hiringDate;
 
-    @NotNull(message = "Company cannot be null!")
     @ManyToOne
-    @JoinColumn(name = "company_id", nullable = false)
+    @JoinColumn(name = "company_id", nullable = true)
     private Company company;
 
     @Email(message = "Email must be valid!")

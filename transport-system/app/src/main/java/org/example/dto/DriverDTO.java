@@ -1,7 +1,6 @@
 package org.example.dto;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 public class DriverDTO {
     private Long id;
@@ -9,19 +8,19 @@ public class DriverDTO {
     private String position;
     private BigDecimal salary;
     private Long companyId;
-    private Set<String> drivingCategories;
+    private String drivingCategory; // Single driving category
     private boolean isDeleted;
 
     // Constructors
     public DriverDTO() {}
 
-    public DriverDTO(Long id, String name, String position, BigDecimal salary, Long companyId, Set<String> drivingCategories, boolean isDeleted) {
+    public DriverDTO(Long id, String name, String position, BigDecimal salary, Long companyId, String drivingCategory, boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.position = position;
         this.salary = salary;
         this.companyId = companyId;
-        this.drivingCategories = drivingCategories;
+        this.drivingCategory = drivingCategory;
         this.isDeleted = isDeleted;
     }
 
@@ -66,12 +65,12 @@ public class DriverDTO {
         this.companyId = companyId;
     }
 
-    public Set<String> getDrivingCategories() {
-        return drivingCategories;
+    public String getDrivingCategory() {
+        return drivingCategory;
     }
 
-    public void setDrivingCategories(Set<String> drivingCategories) {
-        this.drivingCategories = drivingCategories;
+    public void setDrivingCategory(String drivingCategory) {
+        this.drivingCategory = drivingCategory;
     }
 
     public boolean isDeleted() {
@@ -90,7 +89,7 @@ public class DriverDTO {
             ", position='" + position + '\'' +
             ", salary=" + salary +
             ", companyId=" + companyId +
-            ", drivingCategories=" + drivingCategories +
+            ", drivingCategory='" + drivingCategory + '\'' +
             ", isDeleted=" + isDeleted +
             '}';
     }

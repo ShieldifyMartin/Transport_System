@@ -58,7 +58,7 @@ public class DriverService {
         if (driver == null || driver.getId() == 0) {
             throw new IllegalArgumentException("Invalid driver");
         }
-        DriverDAO.softDeleteDriver(driver);
+        StaffDAO.softDeleteStaff(driver.getId());
     }
 
     // Method to hard delete a driver
@@ -121,9 +121,9 @@ public class DriverService {
             throw new IllegalArgumentException("Email must be valid.");
         }
 
-        // Driving categories validation
-        if (driver.getDrivingCategories() == null || driver.getDrivingCategories().isEmpty()) {
-            throw new IllegalArgumentException("Driving categories cannot be null or empty.");
+        // Driving category validation (updated to a single string)
+        if (driver.getDrivingCategory() == null) {
+            throw new IllegalArgumentException("Driving category cannot be null or empty.");
         }
 
         // Total kilometers driven validation

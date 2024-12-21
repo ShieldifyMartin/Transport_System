@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import jakarta.persistence.NoResultException;
 import java.util.List;
 import org.example.configuration.SessionFactoryUtil;
 import org.example.entity.TransportOrder;
@@ -16,6 +17,8 @@ public class TransportOrderDAO {
                     .setParameter("id", id)
                     .getSingleResult();
             transaction.commit();
+        } catch (NoResultException e) {
+            transportOrder = null;
         }
         return transportOrder;
     }
@@ -29,6 +32,8 @@ public class TransportOrderDAO {
                     .createQuery("SELECT tr FROM TransportOrder tr WHERE tr.isDeleted = false", TransportOrder.class)
                     .getResultList();
             transaction.commit();
+        } catch (NoResultException e) {
+            transportOrders = null;
         }
         return transportOrders;
     }

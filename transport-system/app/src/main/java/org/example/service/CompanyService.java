@@ -203,7 +203,18 @@ public class CompanyService {
     
         // Update the company's total expenses with the new salaries paid
         CompanyDAO.addExpenses(companyId, totalPaid);
-    }    
+    }
+
+    // Add Staff to a company
+    public void addStaff(Staff staff) {
+        Company company = staff.getCompany();
+        if (company != null) {
+            company.getStaff().add(staff);
+            CompanyDAO.saveCompany(company);
+        } else {
+            throw new IllegalArgumentException("Staff must be associated with a company");
+        }
+    }
 
     // Helper validation function
     private void validateCompany(Company company) {

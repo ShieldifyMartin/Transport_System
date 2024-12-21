@@ -1,10 +1,12 @@
 package org.example.dao;
 
+import jakarta.persistence.NoResultException;
 import java.util.List;
 import org.example.configuration.SessionFactoryUtil;
 import org.example.entity.Customer;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
 
 public class CustomerDAO {
     // Get Customer by ID where isDeleted is false
@@ -16,6 +18,8 @@ public class CustomerDAO {
                     .setParameter("id", id)
                     .getSingleResult();
             transaction.commit();
+        } catch (NoResultException e) {
+            customer = null;
         }
         return customer;
     }
@@ -29,6 +33,8 @@ public class CustomerDAO {
                     .createQuery("SELECT c FROM Customer c WHERE c.isDeleted = false", Customer.class)
                     .getResultList();
             transaction.commit();
+        } catch (NoResultException e) {
+            customers = null;
         }
         return customers;
     }
@@ -74,10 +80,14 @@ public class CustomerDAO {
     }
 
     // Soft delete customer by setting isDeleted to true
-    public static void softDeleteCustomer(Customer customer) {
+    public static void softDeleteCustomer(long customerId) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            // Mark the customer as deleted instead of removing it from the database
+            Customer customer = session.get(Customer.class, customerId);
+            if (customer == null) {
+                throw new IllegalArgumentException("Customer with ID " + customerId + " does not exist.");
+            }
+
             customer.softDelete();
             session.merge(customer);
             transaction.commit();

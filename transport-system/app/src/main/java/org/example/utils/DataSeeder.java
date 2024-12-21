@@ -2,7 +2,6 @@ package org.example.utils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Set;
 import org.example.entity.*;
 import org.example.entity.enums.*;
 import org.example.service.CompanyService;
@@ -79,7 +78,7 @@ public class DataSeeder {
                 LocalDate.of(2015, 6, 10),
                 company1,
                 "jack15@gmail.com",
-                Set.of(DrivingCategory.B, DrivingCategory.C),
+                DrivingCategory.C,
                 120000L,
                 new BigDecimal("500.00")
             );
@@ -92,7 +91,7 @@ public class DataSeeder {
                 LocalDate.of(2018, 3, 15),
                 company2,
                 "mary@gmail.com",
-                Set.of(DrivingCategory.D, DrivingCategory.B),
+                DrivingCategory.D,
                 80000L,
                 new BigDecimal("200.00")
             );
@@ -105,7 +104,7 @@ public class DataSeeder {
                 LocalDate.of(2010, 4, 12),
                 company3,
                 "peter@global.com",
-                Set.of(DrivingCategory.C, DrivingCategory.D),
+                DrivingCategory.D,
                 150000L,
                 new BigDecimal("800.00")
             );

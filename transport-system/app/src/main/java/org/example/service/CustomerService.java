@@ -84,7 +84,7 @@ public class CustomerService {
         if (customer == null || customer.getId() == 0) {
             throw new IllegalArgumentException("Invalid customer");
         }
-        CustomerDAO.softDeleteCustomer(customer);
+        CustomerDAO.softDeleteCustomer(customer.getId());
     }
 
     // Method to hard delete a customer

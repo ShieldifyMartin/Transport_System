@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import jakarta.persistence.NoResultException;
 import java.util.List;
 import org.example.configuration.SessionFactoryUtil;
 import org.example.entity.Vehicle;
@@ -16,6 +17,8 @@ public class VehicleDAO {
                     .setParameter("id", id)
                     .getSingleResult();
             transaction.commit();
+        } catch (NoResultException e) {
+            vehicle = null;
         }
         return vehicle;
     }
@@ -29,6 +32,8 @@ public class VehicleDAO {
                     .createQuery("SELECT v FROM Vehicle v WHERE v.isDeleted = false", Vehicle.class)
                     .getResultList();
             transaction.commit();
+        } catch (NoResultException e) {
+            vehicles = null;
         }
         return vehicles;
     }

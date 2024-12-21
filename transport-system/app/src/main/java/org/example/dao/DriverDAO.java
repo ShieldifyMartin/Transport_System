@@ -32,15 +32,4 @@ public class DriverDAO {
             transaction.commit();
         }
     }
-
-    // Soft delete driver by setting isDeleted to true
-    public static void softDeleteDriver(Driver driver) {
-        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            // Mark the driver as deleted instead of removing it from the database
-            driver.softDelete();
-            session.merge(driver);
-            transaction.commit();
-        }
-    }
 }

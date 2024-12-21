@@ -89,7 +89,7 @@ public class StaffService {
         if (staff == null || staff.getId() == 0) {
             throw new IllegalArgumentException("Invalid staff");
         }
-        StaffDAO.softDeleteStaff(staff);
+        StaffDAO.softDeleteStaff(staff.getId());
     }
 
     // Hard delete staff (mark as deleted)

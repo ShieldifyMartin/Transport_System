@@ -12,16 +12,37 @@ import org.example.entity.Staff;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-
 public class CompanyDAO {
     public static Company getCompanyById(long id) {
-        Company company;
+        Company company = null;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            company = session.createQuery("Select c From Company c where c.id = :id and c.isDeleted = false", Company.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
+            try {
+                company = session.createQuery("Select c From Company c where c.id = :id and c.isDeleted = false", Company.class)
+                        .setParameter("id", id)
+                        .getSingleResult();
+            } catch (NoResultException e) {
+                company = null;
+            }
             transaction.commit();
+        }
+        return company;
+    }
+
+    public static Company getCompanyByIdAdmin(long id) {
+        Company company = null;
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                company = session.createQuery("Select c From Company c where c.id = :id", Company.class)
+                        .setParameter("id", id)
+                        .getSingleResult();
+            } catch (NoResultException e) {
+                company = null;
+            }
+            transaction.commit();
+        } catch (NoResultException e) {
+            company = null;
         }
         return company;
     }
@@ -34,6 +55,8 @@ public class CompanyDAO {
                     .createQuery("Select c From Company c where c.isDeleted = false", Company.class)
                     .getResultList();
             transaction.commit();
+        } catch (NoResultException e) {
+            companies = null;
         }
         return companies;
     }
@@ -46,6 +69,8 @@ public class CompanyDAO {
                     .createQuery("Select c From Company c", Company.class)
                     .getResultList();
             transaction.commit();
+        } catch (NoResultException e) {
+            companies = null;
         }
         return companies;
     }
@@ -54,18 +79,14 @@ public class CompanyDAO {
         Company company = null;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            try {
-                company = session.createQuery(
-                                "select c from Company c" +
-                                        " join fetch c.staff" +
-                                        " where c.id = :id and c.isDeleted = false",
-                                Company.class)
-                        .setParameter("id", id)
-                        .getSingleResult();
-                transaction.commit();
-            } catch (NoResultException e) {
-                transaction.rollback();
-            }
+            company = session.createQuery(
+                            "select c from Company c" +
+                                    " join fetch c.staff" +
+                                    " where c.id = :id and c.isDeleted = false",
+                            Company.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+            transaction.commit();
         }
         return company != null ? company.getStaff() : Collections.emptySet();
     }
@@ -78,7 +99,7 @@ public class CompanyDAO {
                             "select new org.example.dto.StaffDTO(e.id, e.name)" +
                                     " from Staff e" +
                                     " join e.company c " +
-                                    "where c.id = :id and c.isDeleted = false", // Filter added here
+                                    "where c.id = :id and c.isDeleted = false",
                             StaffDTO.class)
                     .setParameter("id", id)
                     .getResultList();
@@ -103,29 +124,32 @@ public class CompanyDAO {
         }
     }
 
-    public static void hardDeleteCompanyById(long id) {
+    public void hardDeleteCompanyById(long companyId) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            
-            Company company = session.get(Company.class, id);
+    
+            // Check if the Company exists
+            Company company = session.find(Company.class, companyId);
             if (company == null) {
-                throw new IllegalArgumentException("Company with ID " + id + " does not exist.");
+                throw new IllegalArgumentException("Company with ID " + companyId + " does not exist.");
             }
+    
+            // If the company exists, delete it
             session.remove(company);
+    
             transaction.commit();
         }
-    }
-
+    }    
+    
     public static void softDeleteCompanyById(long id) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-
+    
             Company company = session.get(Company.class, id);
             if (company == null) {
                 throw new IllegalArgumentException("Company with ID " + id + " does not exist.");
-            }
+            } 
             
-            // Mark the company as deleted instead of removing it from the database
             company.softDelete();
             session.merge(company);
             transaction.commit();

@@ -34,6 +34,7 @@ public class Vehicle {
 
     @NotBlank(message = "License plate cannot be blank!")
     @Size(max = 20, message = "License plate cannot exceed 20 characters!")
+    @Column(name = "license_plate", nullable = false, unique = true, length=20)
     private String licensePlate;
 
     @Min(value = 1800, message = "Production year must be at least 1800!")
